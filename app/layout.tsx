@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ClientEnvironmentSwitcher from "./components/ClientEnvironmentSwitcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,8 +30,6 @@ export default function RootLayout({
       >
         <div className="fixed inset-0 z-[-1] bg-black opacity-50"></div>
         {children}
-        {/* Environment switcher only appears in development mode */}
-        <ClientEnvironmentSwitcher />
       </body>
     </html>
   );

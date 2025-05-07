@@ -1,25 +1,36 @@
 'use client';
 
-import { useState, FormEvent, useRef } from 'react';
+import { useState, FormEvent, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Turnstile from 'react-turnstile';
 import Header from '../components/Header'; 
 import Environment from '../utils/environment';
 
 export default function Register() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Read reference code from URL parameters
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      console.log('Reference code found in URL:', refCode);
+      setFormData(prev => ({ ...prev, reference_code: refCode }));
+    }
+  }, [searchParams]);
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
     phonenumber: '',
+    address: '',
     date_of_birth: '',
     reference_code: '',
     password: '',
@@ -80,28 +91,6 @@ export default function Register() {
         return;
       }
 
-      // Log image details for debugging
-      console.log('Selected image:', {
-        name: selectedImage.name,
-        type: selectedImage.type,
-        size: `${(selectedImage.size / 1024).toFixed(2)} KB`,
-      });
-
-      // Validate image size (max 2MB)
-      if (selectedImage.size > 2 * 1024 * 1024) {
-        setError('Profile image must be less than 2MB');
-        setIsLoading(false);
-        return;
-      }
-
-      // Validate image type
-      const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-      if (!validTypes.includes(selectedImage.type)) {
-        setError('Profile image must be a JPEG, PNG, or GIF file');
-        setIsLoading(false);
-        return;
-      }
-
       // Current date minus 18 years
       const minDate = new Date();
       minDate.setFullYear(minDate.getFullYear() - 18);
@@ -127,17 +116,14 @@ export default function Register() {
       // Add all text fields
       Object.entries(formData).forEach(([key, value]) => {
         formDataObj.append(key, value);
-        console.log(`Adding form field: ${key}=${value}`);
       });
       
       // Add captcha token
       formDataObj.append('captcha_token', captchaToken);
-      console.log('Adding captcha token:', captchaToken.substring(0, 10) + '...');
       
       // Add profile image with both field names for compatibility
       formDataObj.append('profile_image', selectedImage);
       formDataObj.append('avatar', selectedImage);
-      console.log('Adding profile image with both field names');
 
       // Get API URL from environment
       const apiUrl = Environment.apiBaseUrl;
@@ -154,22 +140,9 @@ export default function Register() {
         body: formDataObj,
       });
 
-      console.log('Registration response status:', response.status);
       const data = await response.json();
-      console.log('Registration response data:', data);
 
       if (!response.ok) {
-        // Log detailed validation errors if available
-        if (data.errors) {
-          console.error('Validation errors:', data.errors);
-          
-          // Format validation errors for display
-          const errorMessages = Object.entries(data.errors)
-            .map(([field, messages]) => `${field}: ${Array.isArray(messages) ? messages.join(', ') : messages}`)
-            .join('\n');
-          
-          throw new Error(`Validation error:\n${errorMessages}`);
-        }
         throw new Error(data.message || data.error || 'Registration failed');
       }
 
@@ -300,6 +273,21 @@ export default function Register() {
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter your phone number"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-200">
+                Address
+              </label>
+              <textarea
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
+                className="mt-1 block w-full px-3 py-2 bg-gray-900/70 border border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter your address"
+                rows={3}
               />
             </div>
 
