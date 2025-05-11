@@ -43,6 +43,7 @@ export default function Register() {
   
   const [formData, setFormData] = useState({
     full_name: '',
+    username: '',
     email: '',
     phonenumber: '',
     address: '',
@@ -57,6 +58,12 @@ export default function Register() {
     let error = '';
     
     switch(name) {
+      case 'username':
+        const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+        if (!usernameRegex.test(value)) {
+          error = 'Username must be 3-20 characters and can only contain letters, numbers, and underscores';
+        }
+        break;
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(value)) {
@@ -441,6 +448,25 @@ export default function Register() {
                 />
                 {fieldsWithErrors.full_name && (
                   <p className="mt-1 text-xs text-red-400">{fieldsWithErrors.full_name}</p>
+                )}
+              </div>
+
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-200">
+                  Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  value={formData.username}
+                  onChange={handleChange}
+                  className={`mt-1 block w-full px-3 py-2 bg-gray-900/70 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors ${fieldsWithErrors.username ? 'border-red-500' : 'border-gray-700 focus:border-purple-500'}`}
+                  placeholder="Choose a username"
+                />
+                {fieldsWithErrors.username && (
+                  <p className="mt-1 text-xs text-red-400">{fieldsWithErrors.username}</p>
                 )}
               </div>
 
