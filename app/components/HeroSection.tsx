@@ -38,7 +38,7 @@ const shootingStars = [
 
 const HeroSection = () => {
   return (
-    <section className="relative w-7xl min-h-screen flex flex-col md:flex-row items-center justify-center mx-auto my-auto px-4 sm:px-8 py-24 pt-32">
+    <section className="py-24 px-4 sm:px-8 relative overflow-hidden">
       {/* Animated stars background */}
       <div className="absolute inset-0 overflow-hidden">
         {starPositions.map((position, i) => (
@@ -97,11 +97,12 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="z-10 w-full md:w-1/2 space-y-8 text-center md:text-left">
+      <div className="w-full mx-auto relative space-y-8 text-center md:text-left">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
+          className="flex flex-col items-center md:items-start"
         >
           <div className="w-40 h-40 relative overflow-hidden">
                           <Image 
@@ -109,7 +110,7 @@ const HeroSection = () => {
                             alt="MTI Logo" 
                             width={400} 
                             height={400}
-                            className="object-contain"
+                            className="mx-auto"
                           />
                         </div>
           <motion.div
