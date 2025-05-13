@@ -68,7 +68,7 @@ const FeaturesSection = () => {
           </h2>
           
           <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-            Meta Travel International offers a comprehensive MLM platform with cutting-edge features designed for your success.
+            Meta Travel International offers a comprehensive community platform with cutting-edge features designed for your success.
           </p>
         </motion.div>
         

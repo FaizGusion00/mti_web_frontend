@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../utils/cn';
+import Image from 'next/image';
 
 // Fixed star positions to avoid hydration errors
 const starPositions = [
@@ -37,7 +38,7 @@ const shootingStars = [
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full min-h-screen flex flex-col md:flex-row items-center justify-center px-4 sm:px-8 py-24 pt-32">
+    <section className="relative w-7xl min-h-screen flex flex-col md:flex-row items-center justify-center mx-auto my-auto px-4 sm:px-8 py-24 pt-32">
       {/* Animated stars background */}
       <div className="absolute inset-0 overflow-hidden">
         {starPositions.map((position, i) => (
@@ -102,6 +103,15 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
+          <div className="w-40 h-40 relative overflow-hidden">
+                          <Image 
+                            src="/logo.png" 
+                            alt="MTI Logo" 
+                            width={400} 
+                            height={400}
+                            className="object-contain"
+                          />
+                        </div>
           <motion.div
             className="inline-block mb-2 px-4 py-1 rounded-full bg-[rgba(30,144,255,0.1)] border border-[var(--accent-blue)] text-sm text-[var(--accent-blue)]"
             initial={{ opacity: 0, y: 20 }}
@@ -128,7 +138,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          Explore a revolutionary MLM platform with travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.
+          Explore a revolutionary community platform with travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.
         </motion.p>
         
         <motion.div
@@ -151,7 +161,7 @@ const HeroSection = () => {
           </motion.a>
           
           <motion.a
-            href="#benefits"
+            href="https://app.metatravel.ai"
             className={cn(
               "px-8 py-4 rounded-full font-bold",
               "border-2 border-[var(--accent-gold)] text-white",
@@ -160,7 +170,7 @@ const HeroSection = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Learn More
+            Login
           </motion.a>
         </motion.div>
       </div>
@@ -191,7 +201,16 @@ const HeroSection = () => {
                 
                 {/* App content */}
                 <div className="p-4">
-                  <div className="flex justify-center mb-6">
+                  <div className="flex justify-center mb-6 gap-2">
+                    <div className="w-8 h-8 relative overflow-hidden">
+                          <Image 
+                            src="/logo.png" 
+                            alt="MTI Logo" 
+                            width={400} 
+                            height={400}
+                            className="object-contain"
+                          />
+                        </div>
                     <div className="text-[var(--accent-blue)] text-glow text-xl font-bold">META TRAVEL</div>
                   </div>
                   
