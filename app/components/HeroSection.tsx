@@ -38,7 +38,7 @@ const shootingStars = [
 
 const HeroSection = () => {
   return (
-    <section className="py-24 px-4 sm:px-8 relative overflow-hidden">
+    <section className="py-24 px-4 sm:px-8 relative overflow-hidden mx-auto">
       {/* Animated stars background */}
       <div className="absolute inset-0 overflow-hidden">
         {starPositions.map((position, i) => (
@@ -97,12 +97,12 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="w-full mx-auto relative space-y-8 text-center md:text-left">
+      <div className="w-full mx-auto relative space-y-8 text-center">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="flex flex-col items-center md:items-start"
+          className="flex flex-col items-center"
         >
           <div className="w-40 h-40 relative overflow-hidden">
                           <Image 
@@ -129,12 +129,12 @@ const HeroSection = () => {
             transition={{ duration: 0.7 }}
           >
             <span className="text-[var(--accent-blue)] text-glow block">META TRAVEL</span>
-            <span className="text-white block">INTERNATIONAL</span>
+            <span className="text-white block text-4xl md:text-7xl">INTERNATIONAL</span>
           </motion.h1>
         </motion.div>
         
         <motion.p 
-          className="text-xl md:text-2xl text-gray-300 max-w-xl"
+          className="text-xl md:text-2xl text-gray-300 max-w-xl text-center mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
@@ -143,7 +143,7 @@ const HeroSection = () => {
         </motion.p>
         
         <motion.div
-          className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+          className="flex flex-col sm:flex-row gap-4 justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
@@ -178,7 +178,7 @@ const HeroSection = () => {
       
       {/* Placeholder for mobile app mockup */}
       <motion.div 
-        className="z-10 w-full md:w-1/2 mt-16 md:mt-0 flex justify-center"
+        className="z-10 w-full mt-16 md:mt-15 flex justify-center"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.6 }}
