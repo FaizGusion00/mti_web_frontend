@@ -129,7 +129,7 @@ const HeroSection = () => {
             transition={{ duration: 0.7 }}
           >
             <span className="text-[var(--accent-blue)] text-glow block">META TRAVEL</span>
-            <span className="text-white block text-4xl md:text-7xl">INTERNATIONAL</span>
+            <span className="text-[var(--accent-gold)] block text-4xl  md:text-7xl">INTERNATIONAL</span>
           </motion.h1>
         </motion.div>
         

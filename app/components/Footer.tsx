@@ -35,9 +35,9 @@ const Footer = () => {
               transition={{ duration: 0.7 }}
             >
               <h3 className="text-2xl font-bold mb-2">
-                <span className="text-[var(--accent-gold)]">META TRAVEL</span>
+                <span className="text-[var(--accent-blue)]">META TRAVEL</span>
               </h3>
-              <h4 className="text-white font-bold">INTERNATIONAL</h4>
+              <h4 className="text-[var(--accent-gold)] font-bold">INTERNATIONAL</h4>
             </motion.div>
             
             <motion.p
@@ -83,6 +83,8 @@ const Footer = () => {
               <FooterLink href="#features">Features</FooterLink>
               <FooterLink href="#benefits">Benefits</FooterLink>
               <FooterLink href="#download">Download</FooterLink>
+              <FooterChildLink href="https://sgp1.vultrobjects.com/mti-assets/docs/MTI_EN.pdf">Plan (EN)</FooterChildLink>
+              <FooterChildLink href="https://sgp1.vultrobjects.com/mti-assets/docs/MTI_BM.pdf">Plan (MY)</FooterChildLink>
               <FooterLink href="#">Privacy Policy</FooterLink>
               <FooterLink href="#">Terms of Service</FooterLink>
             </ul>
@@ -151,6 +153,22 @@ const FooterLink = ({ href, children }: { href: string, children: React.ReactNod
       <a 
         href={href} 
         className="text-gray-400 hover:text-[var(--accent-gold)] transition-colors flex items-center gap-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-[var(--accent-gold)]" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+        </svg>
+        {children}
+      </a>
+    </li>
+  );
+};
+
+const FooterChildLink = ({ href, children }: { href: string, children: React.ReactNode }) => {
+  return (
+    <li>
+      <a 
+        href={href} 
+        className="text-gray-400 hover:text-[var(--accent-gold)] transition-colors flex items-center gap-2 pl-4"
       >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-[var(--accent-gold)]" viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />

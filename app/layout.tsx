@@ -13,9 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Meta Travel International | E-Komuniti Platform",
-  description: "Join Meta Travel International's MLM platform for travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.",
-  keywords: "Meta Travel International, MLM, travel rewards, referral bonuses, XLM staking",
+  title: "Meta Travel International | E-Community Platform",
+  description: "Join Meta Travel International's community platform for travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.",
+  keywords: "Meta Travel International, community, travel rewards, referral bonuses, XLM staking",
+  openGraph: {
+    images: [
+      {
+        url: '/assets/logo.png',
+        width: 800,
+        height: 600,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
