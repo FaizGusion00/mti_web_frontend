@@ -7,8 +7,8 @@ import { cn } from '../utils/cn';
 const benefits = [
   {
     number: "01",
-    title: "Passive Income",
-    description: "Earn commissions through our 5-level referral system, creating a sustainable passive income stream.",
+    title: "Exclusive Member Rewards",
+    description: "Enjoy special deals, incentives, and rewards available only to Meta Travel International members.",
     delay: 0.1
   },
   {
@@ -25,8 +25,8 @@ const benefits = [
   },
   {
     number: "04",
-    title: "Global Community",
-    description: "Join a worldwide network of like-minded individuals passionate about travel and financial freedom.",
+    title: "Global Networking",
+    description: "Connect with a vibrant community of travelers, entrepreneurs, and professionals from around the world.",
     delay: 0.4
   }
 ];
@@ -65,7 +65,7 @@ const BenefitsSection = () => {
           </h2>
           
           <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-            Discover the advantages of becoming part of the Meta Travel International community.
+            Experience the freedom to explore the world anytime in ultimate luxury, without limits.
           </p>
         </motion.div>
         

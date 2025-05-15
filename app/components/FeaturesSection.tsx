@@ -8,22 +8,22 @@ import { cn } from '../utils/cn';
 const features = [
   {
     icon: <FaUsers className="text-4xl text-[var(--accent-gold)]" />,
-    title: "5-Level Referral System",
-    description: "Earn commissions through referrals across five levels with our unilevel compensation structure.",
+    title: "Free Travel Opportunities",
+    description: "Enjoy the chance to explore destinations around the world at no cost through our exclusive travel program.",
     color: "from-blue-500/20 to-purple-500/20",
     delay: 0.1
   },
   {
     icon: <FaCoins className="text-4xl text-[var(--accent-gold)]" />,
-    title: "XLM Staking",
-    description: "Stake XLM coins and track rewards in our integrated cryptocurrency ecosystem.",
+    title: "Income Generation",
+    description: "Earn  income by participating in our innovative business model and referral system.",
     color: "from-purple-500/20 to-pink-500/20",
     delay: 0.2
   },
   {
     icon: <FaWallet className="text-4xl text-[var(--accent-gold)]" />,
-    title: "Multi-Wallet Management",
-    description: "Manage wallets for cash, travel, XLM, and bonus balances all in one place.",
+    title: "Smart & Easy Travel Planning",
+    description: "Access a user-friendly digital platform that simplifies booking and planning your trips anytime, anywhere.",
     color: "from-pink-500/20 to-red-500/20",
     delay: 0.3
   },
@@ -33,7 +33,7 @@ const features = [
     description: "Redeem exclusive travel packages and participate in mystery draws.",
     color: "from-red-500/20 to-blue-500/20",
     delay: 0.4
-  }
+  },
 ];
 
 const FeaturesSection = () => {
@@ -64,11 +64,12 @@ const FeaturesSection = () => {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="text-[var(--accent-blue)] text-glow">Premium</span> Features
+            <span className="text-[var(--accent-blue)] text-glow">Let’s Travel</span> & Earn Income
           </h2>
           
           <p className="text-gray-300 max-w-2xl mx-auto text-lg">
-            Meta Travel International offers a comprehensive community platform with cutting-edge features designed for your success.
+            Enjoy an exclusive getaway with Meta travel International at no cost while unlocking impressive income opportunities.
+            
           </p>
         </motion.div>
         

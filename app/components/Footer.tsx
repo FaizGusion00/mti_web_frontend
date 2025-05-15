@@ -47,7 +47,7 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              A revolutionary community platform with travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.
+              Meta Travel International, headquartered in Marina Bay, Singapore, is an innovative global travel platform that simplifies holiday planning with seamless digital access, while providing users with the opportunity to generate income and enjoy complimentary travel experiences worldwide.
             </motion.p>
             
             <motion.div

@@ -119,7 +119,7 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            Welcome to the Future of Travel & Finance
+            Let’s Travel & Earn Income
           </motion.div>
           
           <motion.h1 
@@ -139,7 +139,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          Explore a revolutionary community platform with travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.
+          Enjoy the chance to explore destinations around the world at no cost through our exclusive travel programs.
         </motion.p>
         
         <motion.div
@@ -182,81 +182,20 @@ const HeroSection = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.6 }}
+        
       >
-        <div className="relative w-72 h-[550px] md:w-80 md:h-[600px] animate-float">
-          {/* Phone frame */}
-          <div className="absolute inset-0 rounded-[40px] border-8 border-[#333] bg-black overflow-hidden shadow-2xl">
-            {/* Screen content */}
-            <div className="absolute inset-0 overflow-hidden">
-              {/* App UI simulation */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a2a] to-black">
-                {/* Status bar */}
-                <div className="h-6 bg-black/40 flex justify-between items-center px-4">
-                  <div className="text-white text-xs">9:41</div>
-                  <div className="flex space-x-1">
-                    <div className="w-4 h-2 bg-white rounded-sm"></div>
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                </div>
-                
-                {/* App content */}
-                <div className="p-4">
-                  <div className="flex justify-center mb-6 gap-2">
-                    <div className="w-8 h-8 relative overflow-hidden">
-                          <Image 
-                            src="/logo.png" 
-                            alt="MTI Logo" 
-                            width={400} 
-                            height={400}
-                            className="object-contain"
-                          />
-                        </div>
-                    <div className="text-[var(--accent-blue)] text-glow text-xl font-bold">META TRAVEL</div>
-                  </div>
-                  
-                  <div className="bg-white/5 rounded-xl p-4 mb-4">
-                    <div className="text-white text-sm font-bold mb-2">Welcome Back!</div>
-                    <div className="h-2 w-3/4 bg-[var(--accent-gold)]/30 rounded-full mb-1"></div>
-                    <div className="h-2 w-1/2 bg-[var(--accent-gold)]/30 rounded-full"></div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-white/5 rounded-xl p-3 h-24">
-                      <div className="text-[var(--accent-gold)] text-xs mb-2">Wallet</div>
-                      <div className="text-white text-lg font-bold">2,580 USDT</div>
-                      <div className="text-green-400 text-xs">+12.5%</div>
-                    </div>
-                    <div className="bg-white/5 rounded-xl p-3 h-24">
-                      <div className="text-[var(--accent-gold)] text-xs mb-2">XLM</div>
-                      <div className="text-white text-lg font-bold">358.42</div>
-                      <div className="text-green-400 text-xs">+5.2%</div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-[var(--accent-blue)]/10 border border-[var(--accent-blue)]/30 rounded-xl p-4">
-                    <div className="text-white text-sm font-bold mb-2">Network Growth</div>
-                    <div className="flex justify-between items-end h-16 mb-1">
-                      <div className="w-2 h-4 bg-[var(--accent-blue)]/50 rounded-t-sm"></div>
-                      <div className="w-2 h-8 bg-[var(--accent-blue)]/50 rounded-t-sm"></div>
-                      <div className="w-2 h-6 bg-[var(--accent-blue)]/50 rounded-t-sm"></div>
-                      <div className="w-2 h-10 bg-[var(--accent-blue)]/50 rounded-t-sm"></div>
-                      <div className="w-2 h-12 bg-[var(--accent-blue)]/50 rounded-t-sm"></div>
-                      <div className="w-2 h-16 bg-[var(--accent-blue)] rounded-t-sm"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Notch */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1/3 h-6 bg-black rounded-b-xl"></div>
+        <div className="relative overflow-hidden flex justify-center">
+            <Image 
+              src="/mti_01.jpeg" 
+              alt="MTI Package" 
+              width={500} 
+              height={890}
+              className="object-contain"
+            />
           </div>
-          
-          {/* Glow effect */}
-          <div className="absolute -inset-4 bg-gradient-to-b from-[var(--accent-blue)] to-transparent opacity-20 rounded-[60px] blur-xl -z-10"></div>
-        </div>
+        <div className="absolute -inset-4 bg-gradient-to-b from-[var(--accent-blue)] to-transparent opacity-20 rounded-[60px] blur-xl -z-10"></div>
       </motion.div>
+      
     </section>
   );
 };
