@@ -4,7 +4,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../utils/cn';
 import Image from 'next/image';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+
+import { Autoplay } from 'swiper/modules';
 // Fixed star positions to avoid hydration errors
 const starPositions = [
   { top: "5%", left: "10%", size: "1px", delay: 0 },
@@ -178,21 +184,45 @@ const HeroSection = () => {
       
       {/* Placeholder for mobile app mockup */}
       <motion.div 
-        className="z-10 w-full mt-16 md:mt-15 flex justify-center"
+        className="z-10 w-3/4 mt-16 md:mt-15 flex justify-center items-center mx-auto"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.7, delay: 0.6 }}
         
       >
-        <div className="relative overflow-hidden flex justify-center">
-            <Image 
-              src="/mti_01.jpeg" 
-              alt="MTI Package" 
-              width={500} 
-              height={890}
-              className="object-contain"
-            />
-          </div>
+
+        <Swiper
+          spaceBetween={30}
+          centeredSlides={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          modules={[Autoplay]}
+          className="mySwiper flex justify-center items-center mx:auto"
+        >
+          <SwiperSlide
+            className='w-full relative flex flex-col justify-center items-center mx:auto text-center'
+          >
+            <Image
+                src="/hero/mti_promo_1.png" 
+                alt="MTI Package 1" 
+                width={375}
+                height={700}
+              />
+          </SwiperSlide>
+          <SwiperSlide
+            className='w-full relative flex flex-col justify-center items-center mx:auto text-center'
+          >
+            <Image
+                src="/hero/mti_promo_2.png" 
+                alt="MTI Package 2" 
+                width={375}
+                height={700}
+              />
+          </SwiperSlide>
+        </Swiper>
+          
         <div className="absolute -inset-4 bg-gradient-to-b from-[var(--accent-blue)] to-transparent opacity-20 rounded-[60px] blur-xl -z-10"></div>
       </motion.div>
       
