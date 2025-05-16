@@ -9,7 +9,7 @@ export interface RegisterData {
   phonenumber: string;
   address?: string;
   date_of_birth: string;
-  ref_code?: string;
+  referral_id?: string;
   password: string;
   profile_image?: File;
 }
@@ -19,11 +19,6 @@ export interface LoginData {
   password: string;
 }
 
-export interface OtpVerificationData {
-  email: string;
-  otp: string;
-}
-
 export interface UserProfile {
   id: number;
   full_name: string;
@@ -31,7 +26,7 @@ export interface UserProfile {
   phonenumber: string;
   address?: string;
   date_of_birth: string;
-  ref_code: string;
+  referral_id: string;
   profile_image?: string;
   created_at?: string;
   updated_at?: string;
@@ -189,16 +184,6 @@ class AuthService {
     } catch {
       return false;
     }
-  }
-
-  async verifyOtp(data: OtpVerificationData): Promise<{ status: string; message: string }> {
-    const response = await axios.post<{ status: string; message: string }>(`${API_URL}/verify-otp`, data);
-    return response.data;
-  }
-
-  async resendOtp(email: string): Promise<{ status: string; message: string }> {
-    const response = await axios.post<{ status: string; message: string }>(`${API_URL}/resend-otp`, { email });
-    return response.data;
   }
 }
 

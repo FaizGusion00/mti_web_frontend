@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/auth.service';
-import VerifyOtpForm from './VerifyOtpForm';
 
 interface RegisterData {
   full_name: string;
-  username: string;
   email: string;
   phonenumber: string;
   address: string;
   date_of_birth: string;
-  ref_code: string;
+  referral_id: string;
   password: string;
   profile_image?: File;
 }
@@ -26,18 +24,16 @@ const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<RegisterData>({
     full_name: '',
-    username: '',
     email: '',
     phonenumber: '',
     address: '',
     date_of_birth: '',
-    ref_code: '',
+    referral_id: '',
     password: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [registrationSuccessful, setRegistrationSuccessful] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,7 +61,8 @@ const RegisterForm: React.FC = () => {
       const response = await authService.register(data) as ApiResponse;
       
       if (response.status === 'success') {
-        setRegistrationSuccessful(true);
+        alert('Registration successful! Please login.');
+        navigate('/login');
       } else {
         setError(response.message || 'Registration failed');
       }
@@ -83,10 +80,6 @@ const RegisterForm: React.FC = () => {
       setLoading(false);
     }
   };
-
-  if (registrationSuccessful) {
-    return <VerifyOtpForm email={formData.email} onSuccess={() => navigate('/login')} />;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -114,32 +107,6 @@ const RegisterForm: React.FC = () => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Full Name"
                 value={formData.full_name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="username" className="sr-only">Username</label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="username" className="sr-only">Username</label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-                value={formData.username}
                 onChange={handleChange}
               />
             </div>
@@ -195,14 +162,14 @@ const RegisterForm: React.FC = () => {
               />
             </div>
             <div>
-              <label htmlFor="ref_code" className="sr-only">Reference Code (Optional)</label>
+              <label htmlFor="referral_id" className="sr-only">Referral Code (Optional)</label>
               <input
-                id="ref_code"
-                name="ref_code"
+                id="referral_id"
+                name="referral_id"
                 type="text"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Reference Code (Optional)"
-                value={formData.ref_code}
+                placeholder="Referral Code (Optional)"
+                value={formData.referral_id}
                 onChange={handleChange}
               />
             </div>
