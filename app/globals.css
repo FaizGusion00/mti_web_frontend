@@ -119,4 +119,12 @@ body {
       background-position: 0% 50%;
     }
   }
+  .swiper-slide {
+    text-align: center;
+
+    /* Center slide text vertically */
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+  }
 }
