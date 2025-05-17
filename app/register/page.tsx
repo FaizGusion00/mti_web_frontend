@@ -503,7 +503,7 @@ export default function Register() {
       console.error('Registration error:', err);
       
       if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
-        setError('Unable to connect to the server. Please check if the backend is running at http://localhost:8000');
+        setError('Unable to connect to the server. Please check if the backend is running!');
       } else {
         setError(err.message || 'An error occurred during registration.');
       }
@@ -918,7 +918,7 @@ export default function Register() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
               Already have an account?{' '}
-              <Link href="http://mti-app-download-link.com" className="text-blue-400 hover:text-blue-300">
+              <Link href="http://app.metatravel.ai" className="text-blue-400 hover:text-blue-300">
                 Download the app to login
               </Link>
             </p>

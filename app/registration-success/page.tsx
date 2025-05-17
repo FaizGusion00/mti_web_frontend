@@ -48,7 +48,7 @@ export default function RegistrationSuccess() {
 
         <div className="space-y-4">
           <Link
-            href="https://play.google.com/store/apps/details?id=com.mti.travel.investment"
+            href="https://app.metatravel.ai"
             target="_blank"
             className="inline-block w-full py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
           >
@@ -56,7 +56,7 @@ export default function RegistrationSuccess() {
           </Link>
           
           <Link
-            href="https://apps.apple.com/app/mti-travel-investment/id123456789"
+            href="https://app.metatravel.ai"
             target="_blank"
             className="inline-block w-full py-3 px-4 border border-gray-700 rounded-md shadow-sm text-white bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-all duration-200"
           >
