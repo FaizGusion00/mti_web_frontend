@@ -6,6 +6,90 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Environment from '../utils/environment';
 
+// Create a completely standalone success modal component
+function SuccessModal({ message, onClose }: { message: string; onClose: () => void }) {
+  useEffect(() => {
+    // Prevent scrolling of the background while modal is open
+    document.body.style.overflow = 'hidden';
+    
+    // Prevent any navigation via history
+    const blockNavigation = (e?: BeforeUnloadEvent) => {
+      console.log('Navigation blocked while success modal is active');
+      // Push current URL back to history to prevent navigation
+      window.history.pushState(null, '', window.location.pathname);
+      
+      if (e) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+      return false;
+    };
+    
+    // Capture navigation events
+    window.addEventListener('popstate', () => blockNavigation());
+    window.addEventListener('beforeunload', blockNavigation);
+    
+    // Clean up function
+    return () => {
+      document.body.style.overflow = 'visible';
+      window.removeEventListener('popstate', () => blockNavigation());
+      window.removeEventListener('beforeunload', blockNavigation);
+    };
+  }, []);
+  
+  return (
+    <div 
+      className="fixed inset-0 z-[9999] bg-black bg-opacity-80 flex items-center justify-center"
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+    >
+      <div 
+        className="bg-gray-900 rounded-xl border-2 border-yellow-400 shadow-[0_0_30px_rgba(255,215,0,0.3)] p-8 max-w-md w-full animate-fade-in"
+        style={{ position: 'relative', zIndex: 10000 }}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        {/* Gold Success Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 p-3 shadow-lg">
+            <svg className="w-16 h-16 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <h2 className="text-2xl font-bold text-center text-yellow-400 mb-4">Success!</h2>
+        
+        <div className="border-t border-b border-gray-700 py-4 my-4">
+          <p className="text-white text-center text-lg">{message}</p>
+        </div>
+        
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="transition-all duration-300 px-10 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-lg text-gray-900 font-bold text-lg shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_20px_rgba(255,215,0,0.7)] focus:outline-none"
+          >
+            Okay, Got It!
+          </button>
+        </div>
+        
+        <p className="mt-6 text-center text-gray-400 text-sm">
+          Click the button above to continue
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function VerifyOTPContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -22,14 +106,25 @@ function VerifyOTPContent() {
   const [otpAttempts, setOtpAttempts] = useState(0); // Track number of failed attempts
 
   useEffect(() => {
+    // Check if we have a pending redirect to home (from previous success)
+    const shouldRedirectToHome = sessionStorage.getItem('redirectToHome') === 'true';
+    if (shouldRedirectToHome) {
+      // Clear the flag
+      sessionStorage.removeItem('redirectToHome');
+      // Redirect to home page
+      window.location.replace('/');
+      return;
+    }
+    
     // Retrieve email from localStorage
     const storedEmail = localStorage.getItem('registrationEmail');
-    if (!storedEmail) {
-      // Redirect to registration if email is not found
+    if (!storedEmail && !showSuccessModal) {
+      // Only redirect to registration if email is not found AND we're not showing success modal
+      // This prevents redirection during success state
       router.push('/register');
       return;
     }
-    setEmail(storedEmail);
+    setEmail(storedEmail || '');
 
     // Countdown for OTP resend
     let timer: NodeJS.Timeout;
@@ -42,56 +137,18 @@ function VerifyOTPContent() {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [countdown, canResend, router]);
+  }, [countdown, canResend, router, showSuccessModal]);
 
-  // Use a strong effect to ensure the success modal stays visible
+  // Simple effect to show modal when success message is set
   useEffect(() => {
-    // Only run if the success message is set
     if (successMessage) {
       console.log('Success message set, showing modal: ', successMessage);
-      
-      // Show the modal
       setShowSuccessModal(true);
-      
-      // Prevent any navigation via history
-      const blockNavigation = () => {
-        console.log('Navigation blocked while success modal is active');
-        // Push current URL back to history to prevent navigation
-        window.history.pushState(null, '', window.location.pathname);
-        return false;
-      };
-      
-      // Capture all possible navigation events
-      window.addEventListener('popstate', blockNavigation);
-      window.addEventListener('beforeunload', blockNavigation);
-      
-      // Push current state to handle the first back button press
-      window.history.pushState(null, '', window.location.pathname);
-      
-      return () => {
-        // Clean up event listeners when component unmounts
-        window.removeEventListener('popstate', blockNavigation);
-        window.removeEventListener('beforeunload', blockNavigation);
-      };
     }
-  }, [successMessage]); // Only depend on successMessage
+  }, [successMessage]);
 
-  // Prevent any navigation transitions while the modal is shown
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (showSuccessModal && !isTransitioning) {
-        console.log('Before unload prevented - success modal is active');
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [showSuccessModal, isTransitioning]);
+  // Remove any potential navigation that could close the modal
+  // No need for this effect as the standalone SuccessModal component handles navigation blocking
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -512,16 +569,17 @@ function VerifyOTPContent() {
       localStorage.removeItem('registrationEmail');
       localStorage.removeItem('registrationBackupData');
       
-      // First update UI to indicate navigation is happening
-      setSuccessMessage(successMessage + ' Redirecting...');
+      console.log('Redirecting to home page...');
       
-      // Use a more direct approach to navigation
-      window.location.href = '/';
+      // Use window.location.replace for a clean navigation to home
+      // This completely replaces the current page in the history
+      // preventing any back-button issues
+      window.location.replace('/');
       
     } catch (error) {
       console.error('Navigation error:', error);
       // Force navigation as fallback
-      window.location.replace('/');
+      window.location.href = '/';
     }
   };
 
@@ -665,44 +723,12 @@ function VerifyOTPContent() {
         </div>
       </div>
 
-      {/* Success Modal - Fixed version that won't auto-close */}
+      {/* Use the standalone SuccessModal component instead of inline modal */}
       {showSuccessModal && (
-        <div className="fixed inset-0 z-[9999] bg-black bg-opacity-80 flex items-center justify-center"
-             style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
-             onClick={(e) => e.stopPropagation()}>
-          <div className="bg-gray-900 rounded-xl border-2 border-yellow-400 shadow-[0_0_30px_rgba(255,215,0,0.3)] p-8 max-w-md w-full animate-fade-in"
-               style={{ position: 'relative', zIndex: 10000 }}
-               onClick={(e) => e.stopPropagation()}>
-            
-            {/* Gold Success Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="rounded-full bg-gradient-to-br from-yellow-400 to-amber-600 p-3 shadow-lg">
-                <svg className="w-16 h-16 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-              </div>
-            </div>
-            
-            <h2 className="text-2xl font-bold text-center text-yellow-400 mb-4">Success!</h2>
-            
-            <div className="border-t border-b border-gray-700 py-4 my-4">
-              <p className="text-white text-center text-lg">{successMessage}</p>
-            </div>
-            
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={handleSuccessOk}
-                className="transition-all duration-300 px-10 py-3 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-lg text-gray-900 font-bold text-lg shadow-[0_0_15px_rgba(255,215,0,0.5)] hover:shadow-[0_0_20px_rgba(255,215,0,0.7)] focus:outline-none"
-              >
-                Okay, Got It!
-              </button>
-            </div>
-            
-            <p className="mt-6 text-center text-gray-400 text-sm">
-              Click the button above to continue
-            </p>
-          </div>
-        </div>
+        <SuccessModal 
+          message={successMessage} 
+          onClose={handleSuccessOk} 
+        />
       )}
     </div>
   );

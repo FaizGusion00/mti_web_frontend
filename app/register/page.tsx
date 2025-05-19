@@ -37,8 +37,8 @@ function RegisterContent() {
       setFormData(prev => ({ ...prev, referral_id: affiliateCode }));
     } else {
       // Leave reference code field blank by default for display purposes
-      // Will silently use ADMIN01 when submitting if empty
-      console.log('No affiliate code found, field will be blank but use ADMIN01 as default');
+      // Will silently use META01 when submitting if empty
+      console.log('No affiliate code found, field will be blank but use META01 as default');
       setFormData(prev => ({ ...prev, referral_id: '' }));
     }
   }, [searchParams]);
@@ -327,9 +327,9 @@ function RegisterContent() {
       
       // Add all text fields
       Object.entries(formData).forEach(([key, value]) => {
-        // If referral_id is empty, silently use ADMIN01 as default
+        // If referral_id is empty, silently use META01 as default
         if (key === 'referral_id' && !value) {
-          formDataObj.append(key, 'ADMIN01');
+          formDataObj.append(key, 'META01');
         } else {
           formDataObj.append(key, value);
         }
