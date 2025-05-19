@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, FormEvent, useRef } from 'react';
+import { useState, useEffect, FormEvent, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Environment from '../utils/environment';
 
-export default function VerifyOTP() {
+function VerifyOTPContent() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
@@ -705,5 +705,14 @@ export default function VerifyOTP() {
         </div>
       )}
     </div>
+  );
+}
+
+// Wrap the component with Suspense to handle client-side hydration
+export default function VerifyOTP() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex justify-center items-center bg-gray-900"><div className="text-white">Loading...</div></div>}>
+      <VerifyOTPContent />
+    </Suspense>
   );
 } 

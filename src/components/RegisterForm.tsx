@@ -32,6 +32,7 @@ const RegisterForm: React.FC = () => {
     password: '',
   });
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ [field: string]: string[] }>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
@@ -50,6 +51,7 @@ const RegisterForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
     setLoading(true);
 
     try {
@@ -69,12 +71,11 @@ const RegisterForm: React.FC = () => {
     } catch (err: any) {
       if (err.response?.data?.errors) {
         const errors = err.response.data.errors;
-        const errorMessage = Object.entries(errors)
-          .map(([field, messages]) => `${field}: ${(messages as string[]).join(', ')}`)
-          .join('\n');
-        setError(errorMessage);
+        setFieldErrors(errors);
+        setError('Validation error');
       } else {
         setError(err.response?.data?.message || 'Registration failed');
+        setFieldErrors({});
       }
     } finally {
       setLoading(false);
@@ -91,8 +92,18 @@ const RegisterForm: React.FC = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700 whitespace-pre-line">{error}</div>
+            <div className="rounded-md bg-red-50 p-4 mb-2">
+              <div className="text-sm text-red-700 font-semibold mb-1">{error}</div>
+              {/* Show field errors as a bullet list */}
+              {Object.keys(fieldErrors).length > 0 && (
+                <ul className="list-disc list-inside text-sm text-red-700">
+                  {Object.entries(fieldErrors).map(([field, messages]) =>
+                    messages.map((msg, i) => (
+                      <li key={field + i}><span className="font-medium">{field.replace('_', ' ')}:</span> {msg}</li>
+                    ))
+                  )}
+                </ul>
+              )}
             </div>
           )}
           
@@ -104,7 +115,7 @@ const RegisterForm: React.FC = () => {
                 name="full_name"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${fieldErrors.full_name ? 'border-red-500' : 'border-gray-300'} placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
                 placeholder="Full Name"
                 value={formData.full_name}
                 onChange={handleChange}

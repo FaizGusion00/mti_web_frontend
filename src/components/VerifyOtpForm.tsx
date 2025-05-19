@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService, OtpVerificationData } from '../services/auth.service';
+import { authService } from '../services/auth.service';
 
 interface VerifyOtpFormProps {
   email: string;
@@ -21,21 +21,25 @@ const VerifyOtpForm: React.FC<VerifyOtpFormProps> = ({ email, onSuccess }) => {
     setLoading(true);
 
     try {
-      const data: OtpVerificationData = {
-        email,
-        otp
-      };
-
-      const response = await authService.verifyOtp(data);
-      
-      if (response.status === 'success') {
-        if (onSuccess) {
-          onSuccess();
+      const payload = { email, otp };
+      try {
+        const res = await fetch('https://panel.metatravel.ai/api/v1/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const response = await res.json();
+        if (res.ok && response.status === 'success') {
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            navigate('/login');
+          }
         } else {
-          navigate('/login');
+          setError(response.message || 'Verification failed');
         }
-      } else {
-        setError(response.message || 'Verification failed');
+      } catch (err: any) {
+        setError('Invalid OTP or verification failed');
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid OTP or verification failed');
@@ -50,15 +54,23 @@ const VerifyOtpForm: React.FC<VerifyOtpFormProps> = ({ email, onSuccess }) => {
     setError(null);
     
     try {
-      const response = await authService.resendOtp(email);
-      
-      if (response.status === 'success') {
-        setResendSuccess(true);
-        setTimeout(() => {
-          setResendSuccess(false);
-        }, 5000);
-      } else {
-        setError(response.message || 'Failed to resend OTP');
+      try {
+        const res = await fetch('https://panel.metatravel.ai/api/v1/resend-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const response = await res.json();
+        if (res.ok && response.status === 'success') {
+          setResendSuccess(true);
+          setTimeout(() => {
+            setResendSuccess(false);
+          }, 5000);
+        } else {
+          setError(response.message || 'Failed to resend OTP');
+        }
+      } catch (err: any) {
+        setError('Failed to resend OTP');
       }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to resend OTP');

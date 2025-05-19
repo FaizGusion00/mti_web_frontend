@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent, useRef, useEffect } from 'react';
+import { useState, FormEvent, useRef, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -8,7 +8,7 @@ import Turnstile from 'react-turnstile';
 import Header from '../components/Header'; 
 import Environment from '../utils/environment';
 
-export default function Register() {
+function RegisterContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -927,4 +927,13 @@ export default function Register() {
       </div>
     </>
   );
-} 
+}
+
+// Wrap the component with Suspense to handle useSearchParams
+export default function Register() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex justify-center items-center bg-gray-900"><div className="text-white">Loading...</div></div>}>
+      <RegisterContent />
+    </Suspense>
+  );
+}
