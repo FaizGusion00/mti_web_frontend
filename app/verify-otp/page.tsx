@@ -11,24 +11,24 @@ function SuccessModal({ message, onClose }: { message: string; onClose: () => vo
   useEffect(() => {
     // Prevent scrolling of the background while modal is open
     document.body.style.overflow = 'hidden';
-    
+
     // Prevent any navigation via history
     const blockNavigation = (e?: BeforeUnloadEvent) => {
       console.log('Navigation blocked while success modal is active');
       // Push current URL back to history to prevent navigation
       window.history.pushState(null, '', window.location.pathname);
-      
+
       if (e) {
         e.preventDefault();
         e.returnValue = '';
       }
       return false;
     };
-    
+
     // Capture navigation events
     window.addEventListener('popstate', () => blockNavigation());
     window.addEventListener('beforeunload', blockNavigation);
-    
+
     // Clean up function
     return () => {
       document.body.style.overflow = 'visible';
@@ -36,9 +36,9 @@ function SuccessModal({ message, onClose }: { message: string; onClose: () => vo
       window.removeEventListener('beforeunload', blockNavigation);
     };
   }, []);
-  
+
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[9999] bg-black bg-opacity-80 flex items-center justify-center"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
       onClick={(e) => {
@@ -46,7 +46,7 @@ function SuccessModal({ message, onClose }: { message: string; onClose: () => vo
         e.stopPropagation();
       }}
     >
-      <div 
+      <div
         className="bg-gray-900 rounded-xl border-2 border-yellow-400 shadow-[0_0_30px_rgba(255,215,0,0.3)] p-8 max-w-md w-full animate-fade-in"
         style={{ position: 'relative', zIndex: 10000 }}
         onClick={(e) => {
@@ -62,13 +62,13 @@ function SuccessModal({ message, onClose }: { message: string; onClose: () => vo
             </svg>
           </div>
         </div>
-        
+
         <h2 className="text-2xl font-bold text-center text-yellow-400 mb-4">Success!</h2>
-        
+
         <div className="border-t border-b border-gray-700 py-4 my-4">
           <p className="text-white text-center text-lg">{message}</p>
         </div>
-        
+
         <div className="flex justify-center mt-6">
           <button
             onClick={(e) => {
@@ -81,7 +81,7 @@ function SuccessModal({ message, onClose }: { message: string; onClose: () => vo
             Okay, Got It!
           </button>
         </div>
-        
+
         <p className="mt-6 text-center text-gray-400 text-sm">
           Click the button above to continue
         </p>
@@ -115,7 +115,7 @@ function VerifyOTPContent() {
       window.location.replace('/');
       return;
     }
-    
+
     // Retrieve email from localStorage
     const storedEmail = localStorage.getItem('registrationEmail');
     if (!storedEmail && !showSuccessModal) {
@@ -161,7 +161,7 @@ function VerifyOTPContent() {
       setError('Maximum verification attempts reached. Requesting a new code...');
       setIsInvalidOtp(true);
       setIsLoading(false);
-      
+
       // Auto-resend OTP if we can
       if (canResend) {
         console.log('Auto-requesting new OTP after max attempts reached');
@@ -189,7 +189,7 @@ function VerifyOTPContent() {
       const verifyEndpoint = '/api/v1/verify-otp'; // Correct path based on Laravel routes
       console.log('Verifying OTP with:', `${apiUrl}${verifyEndpoint}`);
       console.log('Request data:', { email, otp });
-      
+
       // Improved fetch with better error handling
       try {
         const response = await fetch(`${apiUrl}${verifyEndpoint}`, {
@@ -202,18 +202,18 @@ function VerifyOTPContent() {
           credentials: 'same-origin',
           body: JSON.stringify({ email, otp }),
         });
-        
+
         // Check if we got a response at all
         if (!response) {
           throw new Error('No response received from server');
         }
-        
+
         // Try to parse the JSON response (may fail if server returns invalid JSON)
         let data;
         try {
           data = await response.json();
           console.log('Response data:', data);
-          
+
           // Check if we received an OTP in development mode
           if (Environment.isDevelopment && data.data?.otp) {
             console.log('Development mode OTP received:', data.data.otp);
@@ -221,7 +221,7 @@ function VerifyOTPContent() {
             localStorage.setItem('developmentOtp', data.data.otp);
             alert(`Development mode: Your OTP is ${data.data.otp}`);
           }
-          
+
           // Log additional debug info if available
           if (data.debug_info) {
             console.log('Debug info:', data.debug_info);
@@ -230,18 +230,18 @@ function VerifyOTPContent() {
           console.error('Failed to parse response JSON:', jsonError);
           throw new Error('Invalid response from server');
         }
-        
+
         // If we got a success response but user_existed flag is true
         if (response.ok && data.user_existed) {
           console.log('User already exists and was verified');
           setSuccessMessage('Account already verified! You can now login through the mobile app.');
-          
+
           // Clear any stored data
           localStorage.removeItem('registrationEmail');
           localStorage.removeItem('registrationBackupData');
           return;
         }
-        
+
         // Handle API error responses
         if (!response.ok) {
           // Check for PHP "Trying to access array offset on null" error
@@ -250,11 +250,11 @@ function VerifyOTPContent() {
             setIsInvalidOtp(true);
             throw new Error('There was a problem processing your OTP. Please request a new one.');
           }
-          
+
           // Check if the server needs backup registration data
           if (data && data.needs_backup_data) {
             console.log('Server needs backup registration data. Attempting to send backup data...');
-            
+
             // Try to get backup data from localStorage
             const backupDataStr = localStorage.getItem('registrationBackupData');
             if (!backupDataStr) {
@@ -262,11 +262,11 @@ function VerifyOTPContent() {
               setIsInvalidOtp(false);
               throw new Error('Your verification code is valid, but we could not find your registration data. Please restart registration.');
             }
-            
+
             try {
               const backupData = JSON.parse(backupDataStr);
               console.log('Found backup data:', backupData);
-              
+
               // Send backup data to the server
               const backupResponse = await fetch(`${apiUrl}/api/v1/backup-registration`, {
                 method: 'POST',
@@ -279,18 +279,18 @@ function VerifyOTPContent() {
                   otp: otp  // Include the OTP for verification
                 }),
               });
-              
+
               const backupResult = await backupResponse.json();
               console.log('Backup registration response:', backupResult);
-              
+
               if (backupResponse.ok) {
                 // Success with backup data
                 setSuccessMessage('Account created successfully using backup data! You can now login through the mobile app.');
-                
+
                 // Clear backup data and email
                 localStorage.removeItem('registrationBackupData');
                 localStorage.removeItem('registrationEmail');
-                
+
                 return; // Exit early
               } else {
                 throw new Error(backupResult.message || 'Failed to create account with backup data');
@@ -300,42 +300,42 @@ function VerifyOTPContent() {
               throw new Error('Failed to recover your registration data. Please restart registration.');
             }
           }
-          
+
           // Check if this is an invalid/expired OTP error
           const errorMessage = data.message || data.error || 'OTP verification failed';
-          const isExpiredOrInvalidOtp = errorMessage.toLowerCase().includes('invalid') || 
-                                      errorMessage.toLowerCase().includes('expired') || 
+          const isExpiredOrInvalidOtp = errorMessage.toLowerCase().includes('invalid') ||
+                                      errorMessage.toLowerCase().includes('expired') ||
                                       errorMessage.toLowerCase().includes('otp');
-          
+
           if (isExpiredOrInvalidOtp) {
             setIsInvalidOtp(true);
             // Increment failed attempts count
             setOtpAttempts(prev => prev + 1);
             throw new Error(`${errorMessage}. Attempt ${otpAttempts + 1} of 3.`);
           }
-          
+
           throw new Error(errorMessage);
         }
-        
+
         // Success!
         setSuccessMessage('Email verified successfully! You can now login through the mobile app.');
-        
+
         // Clear the stored email after successful verification
         localStorage.removeItem('registrationEmail');
         localStorage.removeItem('registrationBackupData');
-        
+
       } catch (fetchError: any) {
         console.error('Fetch error:', fetchError);
-        
+
         // Check if the error message suggests invalid/expired OTP
         if (fetchError.message && (
-            fetchError.message.toLowerCase().includes('invalid') || 
-            fetchError.message.toLowerCase().includes('expired') || 
+            fetchError.message.toLowerCase().includes('invalid') ||
+            fetchError.message.toLowerCase().includes('expired') ||
             fetchError.message.toLowerCase().includes('otp'))) {
           setIsInvalidOtp(true);
           setOtpAttempts(prev => prev + 1);
         }
-        
+
         // Try alternative API URL if fetch fails
         if (fetchError.message === 'Failed to fetch') {
           try {
@@ -345,13 +345,13 @@ function VerifyOTPContent() {
               '/api/verify-otp',          // Try API prefix
               '/api/v1/verify-otp'        // Try with API version
             ];
-            
+
             let successfulResponse = false;
-            
+
             for (const endpoint of fallbackEndpoints) {
               try {
                 console.log(`Trying fallback endpoint: ${apiUrl}${endpoint}`);
-                
+
                 const retryResponse = await fetch(`${apiUrl}${endpoint}`, {
                   method: 'POST',
                   headers: {
@@ -362,7 +362,7 @@ function VerifyOTPContent() {
                   credentials: 'same-origin',
                   body: JSON.stringify({ email, otp }),
                 });
-                
+
                 let retryData;
                 try {
                   retryData = await retryResponse.json();
@@ -371,22 +371,22 @@ function VerifyOTPContent() {
                   console.error(`Failed to parse JSON from ${endpoint}:`, jsonError);
                   continue; // Skip to next endpoint
                 }
-                
+
                 // Check for PHP "Trying to access array offset on null" error
                 if (retryData && (retryData.message?.includes('array offset on null') || retryData.error?.includes('array offset on null'))) {
                   console.error('Server error: Trying to access array offset on null');
                   setIsInvalidOtp(true);
                   throw new Error('There was a problem processing your OTP. Please request a new one.');
                 }
-                
+
                 if (retryResponse.ok) {
                   // Success on retry!
                   setSuccessMessage('Email verified successfully! You can now login through the mobile app.');
-                  
+
                   // Clear the stored data
                   localStorage.removeItem('registrationEmail');
                   localStorage.removeItem('registrationBackupData');
-                  
+
                   successfulResponse = true;
                   break;
                 }
@@ -395,7 +395,7 @@ function VerifyOTPContent() {
                 // Continue to next endpoint
               }
             }
-            
+
             if (!successfulResponse) {
               throw new Error('Could not connect to the server. Please check if the backend server is running at http://localhost:8000');
             }
@@ -410,16 +410,16 @@ function VerifyOTPContent() {
       }
     } catch (err: any) {
       console.error('Verification error:', err);
-      
+
       // Check if the error message suggests invalid/expired OTP
       if (err.message && (
-          err.message.toLowerCase().includes('invalid') || 
-          err.message.toLowerCase().includes('expired') || 
+          err.message.toLowerCase().includes('invalid') ||
+          err.message.toLowerCase().includes('expired') ||
           err.message.toLowerCase().includes('otp'))) {
         setIsInvalidOtp(true);
         setOtpAttempts(prev => prev + 1);
       }
-      
+
       setError(err.message || 'An error occurred during verification.');
     } finally {
       setIsLoading(false);
@@ -437,7 +437,7 @@ function VerifyOTPContent() {
       const resendEndpoint = '/api/v1/resend-otp'; // Correct path based on Laravel routes
       console.log('Resending OTP to:', `${apiUrl}${resendEndpoint}`);
       console.log('Request data:', { email });
-      
+
       try {
         const response = await fetch(`${apiUrl}${resendEndpoint}`, {
           method: 'POST',
@@ -449,17 +449,17 @@ function VerifyOTPContent() {
           credentials: 'same-origin',
           body: JSON.stringify({ email }),
         });
-        
+
         // Check if we got a response
         if (!response) {
           throw new Error('No response received from server');
         }
-        
+
         let data;
         try {
           data = await response.json();
           console.log('Resend OTP response:', data);
-          
+
           // Check if we received an OTP in development mode
           if (Environment.isDevelopment && data.data?.otp) {
             console.log('Development mode OTP received:', data.data.otp);
@@ -487,7 +487,7 @@ function VerifyOTPContent() {
         setCountdown(60);
       } catch (fetchError: any) {
         console.error('Fetch error:', fetchError);
-        
+
         // Try alternative API URL if fetch fails
         if (fetchError.message === 'Failed to fetch') {
           try {
@@ -497,13 +497,13 @@ function VerifyOTPContent() {
               '/api/resend-otp',          // Try API prefix
               '/api/v1/resend-otp'        // Try with API version
             ];
-            
+
             let successfulResponse = false;
-            
+
             for (const endpoint of fallbackEndpoints) {
               try {
                 console.log(`Trying fallback endpoint: ${apiUrl}${endpoint}`);
-                
+
                 const retryResponse = await fetch(`${apiUrl}${endpoint}`, {
                   method: 'POST',
                   headers: {
@@ -514,10 +514,10 @@ function VerifyOTPContent() {
                   credentials: 'same-origin',
                   body: JSON.stringify({ email }),
                 });
-                
+
                 const retryData = await retryResponse.json();
                 console.log(`Response from ${endpoint}:`, retryData);
-                
+
                 if (retryResponse.ok) {
                   // Clear previous OTP input since it's now invalid
                   setOtp('');
@@ -528,7 +528,7 @@ function VerifyOTPContent() {
                   setSuccessMessage('A new verification code has been sent to your email. Previous codes are no longer valid.');
                   setCanResend(false);
                   setCountdown(60);
-                  
+
                   successfulResponse = true;
                   break;
                 }
@@ -537,7 +537,7 @@ function VerifyOTPContent() {
                 // Continue to next endpoint
               }
             }
-            
+
             if (!successfulResponse) {
               throw new Error('Could not connect to the server. Please check if the backend server is running at http://localhost:8000');
             }
@@ -561,21 +561,21 @@ function VerifyOTPContent() {
   const handleSuccessOk = () => {
     try {
       console.log('Success modal OK button clicked');
-      
+
       // Mark that we're intentionally navigating away
       setIsTransitioning(true);
-      
+
       // Clear any localStorage data
       localStorage.removeItem('registrationEmail');
       localStorage.removeItem('registrationBackupData');
-      
+
       console.log('Redirecting to home page...');
-      
+
       // Use window.location.replace for a clean navigation to home
       // This completely replaces the current page in the history
       // preventing any back-button issues
       window.location.replace('/');
-      
+
     } catch (error) {
       console.error('Navigation error:', error);
       // Force navigation as fallback
@@ -589,11 +589,11 @@ function VerifyOTPContent() {
         <div className="text-center mb-10">
           <Link href="/">
             <div className="inline-block">
-              <Image 
-                src="/logo.png" 
-                alt="MTI Logo" 
-                width={100} 
-                height={100} 
+              <Image
+                src="/logo.png"
+                alt="MTI Logo"
+                width={100}
+                height={100}
                 className="mx-auto"
               />
             </div>
@@ -607,7 +607,7 @@ function VerifyOTPContent() {
             <p>{error}</p>
             {isInvalidOtp && canResend && (
               <div className="mt-3 flex items-center">
-                <button 
+                <button
                   onClick={handleResendOTP}
                   disabled={isLoading}
                   className="px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-600 focus:outline-none transition-colors"
@@ -659,7 +659,7 @@ function VerifyOTPContent() {
                 // Only allow numbers and keep it to 6 digits max
                 const newValue = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
                 setOtp(newValue);
-                
+
                 // Clear any previous error when user starts editing
                 if (isInvalidOtp) {
                   setIsInvalidOtp(false);
@@ -701,8 +701,8 @@ function VerifyOTPContent() {
           <p className="text-sm text-gray-400">
             Didn't receive the code?{' '}
             {canResend ? (
-              <button 
-                onClick={handleResendOTP} 
+              <button
+                onClick={handleResendOTP}
                 disabled={isLoading}
                 className="text-blue-400 hover:text-blue-300 focus:outline-none"
               >
@@ -725,9 +725,9 @@ function VerifyOTPContent() {
 
       {/* Use the standalone SuccessModal component instead of inline modal */}
       {showSuccessModal && (
-        <SuccessModal 
-          message={successMessage} 
-          onClose={handleSuccessOk} 
+        <SuccessModal
+          message={successMessage}
+          onClose={handleSuccessOk}
         />
       )}
     </div>
