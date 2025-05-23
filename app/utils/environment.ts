@@ -64,7 +64,7 @@ export default class Environment {
     if (this.isDevelopment) {
       return this.useLocalServer
         ? 'http://localhost:8000' // Direct to local backend
-        : '';                     // Empty => proxy to panel.metatravel.ai
+        : 'https://panel.metatravel.ai'; // Use direct URL instead of proxy
     }
 
     // In production, always target the real panel
