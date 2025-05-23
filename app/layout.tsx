@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Meta Travel International | E-Komuniti Platform",
-  description: "Join Meta Travel International's MLM platform for travel rewards, referral bonuses, and XLM staking in a premium cosmic ecosystem.",
-  keywords: "Meta Travel International, MLM, travel rewards, referral bonuses, XLM staking",
+  title: "Meta Travel International | Let’s Travel & Earn Income",
+  description: "Join Meta Travel International's  innovative global travel platform that simplifies holiday planning with seamless digital access, and enjoy complimentary travel experiences worldwide.",
+  keywords: "Meta Travel International, community, travel rewards, referral bonuses",
 };
 
 export default function RootLayout({
