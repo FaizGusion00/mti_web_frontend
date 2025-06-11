@@ -521,13 +521,7 @@ function RegisterContent() {
           }
           
           if (!successfulResponse) {
-            // Use environment-specific error message
-            const serverUrl = Environment.apiBaseUrl;
-            const errorMessage = Environment.isDevelopment
-              ? `Could not connect to the registration server. Please ensure the backend server is running at ${serverUrl}`
-              : 'Could not connect to the registration server. Please try again later or contact support.';
-            
-            throw new Error(errorMessage);
+            throw new Error('Could not connect to the registration server. Please ensure the backend server is running at http://localhost:8000');
           }
         } else {
           // If it's not a connection error, rethrow
