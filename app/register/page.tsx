@@ -16,6 +16,8 @@ function RegisterContent() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [fieldsWithErrors, setFieldsWithErrors] = useState<{[key: string]: string}>({});
@@ -396,7 +398,7 @@ function RegisterContent() {
           throw new Error(data.message || data.error || 'Registration failed');
         }
 
-        // If successful, redirect to OTP verification page
+        // If successful, store registration email and backup data
         localStorage.setItem('registrationEmail', formData.email);
         
         // Store form data as JSON (excluding sensitive items) as a backup
@@ -420,7 +422,34 @@ function RegisterContent() {
           console.log('Development mode: OTP stored for testing:', data.data.otp);
         }
         
-        router.push('/verify-otp');
+        // Check if OTP verification is enabled
+        try {
+          const otpStatusResponse = await fetch(`${apiUrl}/api/v1/otp-status`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
+          });
+          
+          const otpStatusData = await otpStatusResponse.json();
+          console.log('OTP status response:', otpStatusData);
+          
+          if (otpStatusResponse.ok && otpStatusData.data && otpStatusData.data.otp_enabled === false) {
+            // OTP is disabled, show success modal directly
+            console.log('OTP verification is disabled, showing success modal');
+            setSuccessMessage('Your account has been created successfully! You can now download the app to login.');
+            setShowSuccessModal(true);
+          } else {
+            // OTP is enabled, redirect to OTP verification page
+            console.log('OTP verification is enabled, redirecting to verification page');
+            router.push('/verify-otp');
+          }
+        } catch (otpStatusError) {
+          console.error('Failed to check OTP status:', otpStatusError);
+          // Default to OTP verification page if status check fails
+          router.push('/verify-otp');
+        }
       } catch (fetchError: any) {
         console.error('Fetch error:', fetchError);
         
@@ -929,6 +958,52 @@ function RegisterContent() {
               </Link>
             </p>
           </div>
+
+          {/* Success Modal */}
+          {showSuccessModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-md w-full">
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-4">
+                    <svg
+                      className="w-8 h-8 text-green-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Registration Successful!</h3>
+                  <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
+                    {successMessage}
+                  </p>
+                  <div className="flex space-x-4">
+                    <a
+                      href="https://play.google.com/store/apps/details?id=com.mti.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    >
+                      Download App
+                    </a>
+                    <button
+                      onClick={() => router.push('/')}
+                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      Back to Home
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
