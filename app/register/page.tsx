@@ -986,7 +986,7 @@ function RegisterContent() {
                   </p>
                   <div className="flex space-x-4">
                     <a
-                      href="https://play.google.com/store/apps/details?id=com.mti.app"
+                      href="https://app.metatravel.ai/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
