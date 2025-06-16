@@ -521,17 +521,7 @@ function RegisterContent() {
           }
           
           if (!successfulResponse) {
-<<<<<<< HEAD
-            throw new Error('Could not connect to the registration server. Please ensure the backend server is running at http://localhost:8000');
-=======
-            // Use environment-specific error message
-            const serverUrl = Environment.apiBaseUrl;
-            const errorMessage = Environment.isDevelopment
-              ? `Registration server is busy now. Please try again in few minutes.`
-              : 'Could not connect to the registration server. Please try again later or contact support.';
-            
-            throw new Error(errorMessage);
->>>>>>> origin/main
+            throw new Error('Registration server is busy. Please try again in few minutes.');
           }
         } else {
           // If it's not a connection error, rethrow
