@@ -521,7 +521,7 @@ function RegisterContent() {
           }
           
           if (!successfulResponse) {
-            throw new Error('Registration server is busy. Please try again in few minutes.');
+            throw new Error('Please wait 5 minutes to try again');
           }
         } else {
           // If it's not a connection error, rethrow
@@ -532,7 +532,7 @@ function RegisterContent() {
       console.error('Registration error:', err);
       
       if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
-        setError('Unable to connect to the server. Please check if the backend is running!');
+        setError('Please wait 5 minutes to try again');
       } else {
         setError(err.message || 'An error occurred during registration.');
       }
