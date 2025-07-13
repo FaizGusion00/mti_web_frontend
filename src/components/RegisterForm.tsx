@@ -1,17 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/auth.service';
-
-interface RegisterData {
-  full_name: string;
-  email: string;
-  phonenumber: string;
-  address: string;
-  date_of_birth: string;
-  referral_id: string;
-  password: string;
-  profile_image?: File;
-}
+import { authService, RegisterData } from '../services/auth.service';
 
 interface ApiResponse {
   status: 'success' | 'error';
@@ -24,12 +13,14 @@ const RegisterForm: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<RegisterData>({
     full_name: '',
+    username: '',
     email: '',
     phonenumber: '',
     address: '',
     date_of_birth: '',
     referral_id: '',
     password: '',
+    password_confirmation: '',
   });
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ [field: string]: string[] }>({});
@@ -122,6 +113,19 @@ const RegisterForm: React.FC = () => {
               />
             </div>
             <div>
+              <label htmlFor="username" className="sr-only">Username</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${fieldErrors.username ? 'border-red-500' : 'border-gray-300'} placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
               <label htmlFor="email" className="sr-only">Email address</label>
               <input
                 id="email"
@@ -194,6 +198,19 @@ const RegisterForm: React.FC = () => {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
                 value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="password_confirmation" className="sr-only">Confirm Password</label>
+              <input
+                id="password_confirmation"
+                name="password_confirmation"
+                type="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Confirm Password"
+                value={formData.password_confirmation}
                 onChange={handleChange}
               />
             </div>
