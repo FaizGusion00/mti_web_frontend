@@ -1,52 +1,57 @@
 import axios from 'axios';
-
-// Use the production URL for API connections
-const API_URL = 'https://panel.metatravel.ai/api/v1';
+import Environment from '../../app/utils/environment';
 
 export interface RegisterData {
   full_name: string;
+  username: string;
   email: string;
   phonenumber: string;
   address?: string;
   date_of_birth: string;
   referral_id?: string;
   password: string;
+  password_confirmation: string;
   profile_image?: File;
 }
 
-export interface LoginData {
+export interface OtpVerifyData {
   email: string;
-  password: string;
+  otp: string;
 }
 
-export interface UserProfile {
-  id: number;
-  full_name: string;
-  email: string;
-  phonenumber: string;
-  address?: string;
-  date_of_birth: string;
-  referral_id: string;
-  profile_image?: string;
-  created_at?: string;
-  updated_at?: string;
+export interface ApiResponse<T = any> {
+  status: 'success' | 'error';
+  message: string;
+  data?: T;
+  errors?: { [key: string]: string[] };
+  user?: any;
+  otp?: string;
 }
 
 class AuthService {
-  private token: string | null = null;
-
-  constructor() {
-    this.token = localStorage.getItem('token');
+  private get apiUrl() {
+    return `${Environment.apiBaseUrl}/api/v1`;
   }
 
   private getHeaders() {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     return {
       'Content-Type': 'application/json',
-      ...(this.token ? { 'Authorization': `Bearer ${this.token}` } : {})
+      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
     };
   }
 
-  async register(data: RegisterData): Promise<{ user: UserProfile; token: string }> {
+  async checkOtpStatus(): Promise<{ otp_enabled: boolean }> {
+    try {
+      const response = await axios.get<ApiResponse<{ otp_enabled: boolean }>>(`${this.apiUrl}/otp-status`);
+      return response.data.data || { otp_enabled: false };
+    } catch (error) {
+      console.error('Error checking OTP status:', error);
+      return { otp_enabled: false }; // Default to disabled if check fails
+    }
+  }
+
+  async register(data: RegisterData): Promise<ApiResponse> {
     const formData = new FormData();
     
     // Append all text fields
@@ -61,129 +66,84 @@ class AuthService {
       formData.append('profile_image', data.profile_image);
     }
 
-    const response = await axios.post<{ user: UserProfile; token: string }>(`${API_URL}/register`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+    try {
+      const response = await axios.post<ApiResponse>(`${this.apiUrl}/register`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data) {
+        return error.response.data as ApiResponse;
       }
-    });
-
-    if (response.data.token) {
-      this.token = response.data.token;
-      localStorage.setItem('token', response.data.token);
+      return {
+        status: 'error',
+        message: 'Registration failed. Please try again.',
+        errors: {}
+      };
     }
-
-    return response.data;
   }
 
-  async login(data: LoginData): Promise<{ user: UserProfile; token: string }> {
-    const response = await axios.post<{ user: UserProfile; token: string }>(`${API_URL}/login`, data);
-
-    if (response.data.token) {
-      this.token = response.data.token;
-      localStorage.setItem('token', response.data.token);
+  async verifyOtp(data: OtpVerifyData): Promise<ApiResponse> {
+    try {
+      const response = await axios.post<ApiResponse>(`${this.apiUrl}/verify-otp`, data);
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data) {
+        return error.response.data as ApiResponse;
+      }
+      return {
+        status: 'error',
+        message: 'OTP verification failed. Please try again.'
+      };
     }
-
-    return response.data;
   }
 
-  async getProfile(): Promise<UserProfile> {
-    const response = await axios.get<{ user: UserProfile }>(`${API_URL}/profile`, {
-      headers: this.getHeaders()
-    });
-    return response.data.user;
+  async resendOtp(email: string): Promise<ApiResponse> {
+    try {
+      const response = await axios.post<ApiResponse>(`${this.apiUrl}/resend-otp`, { email });
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data) {
+        return error.response.data as ApiResponse;
+      }
+      return {
+        status: 'error',
+        message: 'Failed to resend OTP. Please try again.'
+      };
+    }
   }
 
-  async updateProfile(data: Partial<UserProfile> & { profile_image?: File }): Promise<UserProfile> {
-    const formData = new FormData();
-    
-    // Append all text fields
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && key !== 'profile_image') {
-        formData.append(key, String(value));
+  async login(data: { email: string; password: string }): Promise<ApiResponse> {
+    try {
+      const response = await axios.post<ApiResponse>(`${this.apiUrl}/login`, data);
+      
+      if (response.data.status === 'success' && response.data.data?.token) {
+        localStorage.setItem('token', response.data.data.token);
       }
-    });
-
-    // Append profile image if exists
-    if (data.profile_image) {
-      formData.append('profile_image', data.profile_image);
+      
+      return response.data;
+    } catch (error: any) {
+      if (error.response?.data) {
+        return error.response.data as ApiResponse;
+      }
+      return {
+        status: 'error',
+        message: 'Login failed. Please try again.'
+      };
     }
-
-    const response = await axios.put<{ user: UserProfile }>(`${API_URL}/profile`, formData, {
-      headers: {
-        ...this.getHeaders(),
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    return response.data.user;
   }
 
   logout(): void {
-    this.token = null;
-    localStorage.removeItem('token');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
   }
 
   isAuthenticated(): boolean {
-    return !!this.token;
-  }
-
-  async generateNewToken(): Promise<{ token: string; expires_at: string }> {
-    const response = await axios.post<{ token: string; expires_at: string }>(
-      `${API_URL}/token/generate`,
-      {},
-      { headers: this.getHeaders() }
-    );
-
-    if (response.data.token) {
-      this.token = response.data.token;
-      localStorage.setItem('token', response.data.token);
-    }
-
-    return response.data;
-  }
-
-  async getTokenInfo(): Promise<{
-    token_id: number;
-    name: string;
-    abilities: string[];
-    last_used_at: string;
-    expires_at: string;
-  }> {
-    const response = await axios.get(
-      `${API_URL}/token/info`,
-      { headers: this.getHeaders() }
-    );
-    return (response.data as { token_info: {
-      token_id: number;
-      name: string;
-      abilities: string[];
-      last_used_at: string;
-      expires_at: string;
-    }}).token_info;
-  }
-
-  async revokeAllTokens(): Promise<void> {
-    await axios.post(
-      `${API_URL}/token/revoke`,
-      {},
-      { headers: this.getHeaders() }
-    );
-    this.logout();
-  }
-
-  async checkAndRefreshTokenIfNeeded(): Promise<boolean> {
-    try {
-      const tokenInfo = await this.getTokenInfo();
-      const expiresAt = new Date(tokenInfo.expires_at);
-      
-      // If token expires in less than 1 day, generate a new one
-      if (expiresAt.getTime() - Date.now() < 24 * 60 * 60 * 1000) {
-        await this.generateNewToken();
-      }
-      return true;
-    } catch {
-      return false;
-    }
+    if (typeof window === 'undefined') return false;
+    return !!localStorage.getItem('token');
   }
 }
 
