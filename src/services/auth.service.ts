@@ -68,15 +68,15 @@ class AuthService {
 
     try {
       const response = await axios.post<ApiResponse>(`${this.apiUrl}/register`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
       return response.data;
     } catch (error: any) {
       if (error.response?.data) {
         return error.response.data as ApiResponse;
-      }
+    }
       return {
         status: 'error',
         message: 'Registration failed. Please try again.',
@@ -92,7 +92,7 @@ class AuthService {
     } catch (error: any) {
       if (error.response?.data) {
         return error.response.data as ApiResponse;
-      }
+    }
       return {
         status: 'error',
         message: 'OTP verification failed. Please try again.'
@@ -112,7 +112,7 @@ class AuthService {
         status: 'error',
         message: 'Failed to resend OTP. Please try again.'
       };
-    }
+      }
   }
 
   async login(data: { email: string; password: string }): Promise<ApiResponse> {
@@ -137,7 +137,7 @@ class AuthService {
 
   logout(): void {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
+    localStorage.removeItem('token');
     }
   }
 

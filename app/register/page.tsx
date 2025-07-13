@@ -425,8 +425,8 @@ export default function Register() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+      setFormData(prev => ({ ...prev, [name]: value }));
+      
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -505,14 +505,24 @@ export default function Register() {
     if (!validateForm()) {
       return;
     }
-
+    
     setIsLoading(true);
     
     try {
-      const response = await authService.register({
-        ...formData,
+      const registerData: RegisterData = {
+          full_name: formData.full_name,
+          username: formData.username,
+          email: formData.email,
+          phonenumber: formData.phonenumber,
+          address: formData.address,
+          date_of_birth: formData.date_of_birth,
+          referral_id: formData.referral_id,
+        password: formData.password,
+        password_confirmation: formData.password_confirmation,
         profile_image: selectedImage || undefined
-      });
+      };
+
+      const response = await authService.register(registerData);
 
       if (response.status === 'success') {
         if (otpEnabled) {
@@ -525,7 +535,7 @@ export default function Register() {
             showOtpInput: true,
             email: formData.email
           });
-        } else {
+          } else {
           // Registration complete without OTP
           setModal({
             isOpen: true,
@@ -618,7 +628,7 @@ export default function Register() {
           title: 'Code Sent',
           message: 'A new verification code has been sent to your email.'
         }));
-      } else {
+        } else {
         setModal(prev => ({
           ...prev,
           type: 'error',
@@ -650,7 +660,7 @@ export default function Register() {
     }
   };
 
-  return (
+    return (
     <div className="min-h-screen cosmic-gradient relative overflow-hidden">
       {/* Animated background elements */}
       <div className="absolute inset-0">
@@ -671,15 +681,15 @@ export default function Register() {
             transition={{ duration: 0.8 }}
           >
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full mb-6 backdrop-blur-sm border border-white/10">
-              <Image
-                src="/logo.png"
-                alt="MTI Logo"
+                <Image 
+                  src="/logo.png" 
+                  alt="MTI Logo" 
                 width={48}
                 height={48}
                 className="object-contain"
                 priority
-              />
-            </div>
+                />
+              </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Join <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-amber-500">META TRAVEL</span>
             </h1>
@@ -720,8 +730,8 @@ export default function Register() {
                       <div className="text-center">
                         <CameraIcon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                         <span className="text-gray-400 text-sm">Add Photo</span>
-                      </div>
-                    )}
+            </div>
+          )}
                   </motion.div>
                   <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center cursor-pointer group-hover:bg-blue-600 transition-colors">
                     <CameraIcon className="w-5 h-5 text-white" />
@@ -757,18 +767,18 @@ export default function Register() {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
                   <div className="relative">
                     <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
+                <input
+                  type="text"
                       name="full_name"
-                      value={formData.full_name}
-                      onChange={handleChange}
+                  value={formData.full_name}
+                  onChange={handleChange}
                       className={`w-full pl-10 pr-4 py-4 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                         errors.full_name ? 'border-red-500' : 'border-gray-600'
                       }`}
-                      placeholder="Enter your full name"
+                  placeholder="Enter your full name"
                       required
-                    />
-                  </div>
+                />
+              </div>
                   {errors.full_name && <p className="text-red-400 text-sm mt-2">{errors.full_name}</p>}
                 </motion.div>
 
@@ -779,15 +789,15 @@ export default function Register() {
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Username *</label>
-                  <input
-                    type="text"
+                <input
+                  type="text"
                     name="username"
-                    value={formData.username}
-                    onChange={handleChange}
+                  value={formData.username}
+                  onChange={handleChange}
                     className={`w-full px-4 py-4 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                       errors.username ? 'border-red-500' : 'border-gray-600'
                     }`}
-                    placeholder="Choose a username"
+                  placeholder="Choose a username"
                     required
                   />
                   {errors.username && <p className="text-red-400 text-sm mt-2">{errors.username}</p>}
@@ -800,11 +810,11 @@ export default function Register() {
                   transition={{ duration: 0.6, delay: 0.7 }}
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
-                  <input
-                    type="email"
+                <input
+                  type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                  value={formData.email}
+                  onChange={handleChange}
                     className={`w-full px-4 py-4 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                       errors.email ? 'border-red-500' : 'border-gray-600'
                     }`}
@@ -821,11 +831,11 @@ export default function Register() {
                   transition={{ duration: 0.6, delay: 0.8 }}
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
-                  <input
-                    type="tel"
+                <input
+                  type="tel"
                     name="phonenumber"
-                    value={formData.phonenumber}
-                    onChange={handleChange}
+                  value={formData.phonenumber}
+                  onChange={handleChange}
                     className={`w-full px-4 py-4 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                       errors.phonenumber ? 'border-red-500' : 'border-gray-600'
                     }`}
@@ -842,10 +852,10 @@ export default function Register() {
                   transition={{ duration: 0.6, delay: 0.9 }}
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Address</label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address}
                     onChange={handleChange}
                     className="w-full px-4 py-4 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300"
                     placeholder="Your address (optional)"
@@ -859,11 +869,11 @@ export default function Register() {
                   transition={{ duration: 0.6, delay: 1.0 }}
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Date of Birth *</label>
-                  <input
-                    type="date"
+                <input
+                  type="date"
                     name="date_of_birth"
-                    value={formData.date_of_birth}
-                    onChange={handleChange}
+                  value={formData.date_of_birth}
+                  onChange={handleChange}
                     className={`w-full px-4 py-4 bg-gray-800/50 border rounded-xl text-white focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                       errors.date_of_birth ? 'border-red-500' : 'border-gray-600'
                     }`}
@@ -871,7 +881,7 @@ export default function Register() {
                   />
                   {errors.date_of_birth && <p className="text-red-400 text-sm mt-2">{errors.date_of_birth}</p>}
                 </motion.div>
-              </div>
+            </div>
 
               {/* Referral Code - Full Width */}
               <motion.div
@@ -902,9 +912,9 @@ export default function Register() {
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                       className={`w-full px-4 py-4 pr-12 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                         errors.password ? 'border-red-500' : 'border-gray-600'
                       }`}
@@ -918,7 +928,7 @@ export default function Register() {
                     >
                       {showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                     </button>
-                  </div>
+                    </div>
                   {errors.password && <p className="text-red-400 text-sm mt-2">{errors.password}</p>}
                   <PasswordStrength password={formData.password} />
                 </motion.div>
@@ -931,15 +941,15 @@ export default function Register() {
                 >
                   <label className="block text-sm font-medium text-gray-300 mb-2">Confirm Password *</label>
                   <div className="relative">
-                    <input
+                <input
                       type={showConfirmPassword ? 'text' : 'password'}
-                      name="password_confirmation"
-                      value={formData.password_confirmation}
-                      onChange={handleChange}
+                  name="password_confirmation"
+                  value={formData.password_confirmation}
+                  onChange={handleChange}
                       className={`w-full px-4 py-4 pr-12 bg-gray-800/50 border rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all duration-300 ${
                         errors.password_confirmation ? 'border-red-500' : 'border-gray-600'
                       }`}
-                      placeholder="Confirm your password"
+                  placeholder="Confirm your password"
                       required
                     />
                     <button
@@ -949,7 +959,7 @@ export default function Register() {
                     >
                       {showConfirmPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
                     </button>
-                  </div>
+                    </div>
                   {errors.password_confirmation && <p className="text-red-400 text-sm mt-2">{errors.password_confirmation}</p>}
                 </motion.div>
               </div>
@@ -975,7 +985,7 @@ export default function Register() {
 
               {/* Submit Button */}
               <motion.button
-                type="submit"
+                  type="submit"
                 disabled={isLoading}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 flex items-center justify-center text-lg"
                 initial={{ opacity: 0, y: 20 }}
@@ -1002,16 +1012,16 @@ export default function Register() {
                 transition={{ duration: 0.6, delay: 1.6 }}
               >
                 <p className="text-gray-400">
-                  Already have an account?{' '}
+              Already have an account?{' '}
                   <Link href="https://app.metatravel.ai" className="text-yellow-500 hover:text-yellow-400 transition-colors font-semibold">
                     Sign In
-                  </Link>
-                </p>
+              </Link>
+            </p>
               </motion.div>
             </form>
           </motion.div>
         </div>
-      </div>
+          </div>
 
       {/* Modal */}
       <Modal
@@ -1026,6 +1036,6 @@ export default function Register() {
         isOtpLoading={isOtpLoading}
         email={modal.email}
       />
-    </div>
+                  </div>
   );
 }
